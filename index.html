@@ -1,0 +1,1453 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tablas de Multiplicar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: una columna. Inicio con dos opciones grandes (Tarjetas de estudio / Prueba), selector de tabla en rejilla, y un personaje distinto por tabla con su globo de diálogo en la prueba. */
+:root {
+  --bg: #EDF1F7;
+  --surface: #FFFFFF;
+  --ink: #16203A;
+  --muted: #5B6783;
+  --line: #D3DBEA;
+  --rule: #DCE6F6;
+  --focus: #2B5BD7;
+  --good: #11795A;
+  --bad: #B83A2E;
+  --band-s: 75%;
+  --band-l: 70%;
+  --on-band: #14203A;
+  --shadow: 0 2px 0 rgba(22, 32, 58, 0.08), 0 8px 18px -10px rgba(22, 32, 58, 0.35);
+  --beak: hsl(38 95% 58%);
+  --blush: hsl(350 85% 76%);
+  --tear: hsl(200 90% 62%);
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1526;
+    --surface: #1A2340;
+    --ink: #EAF0FF;
+    --muted: #9FADD0;
+    --line: #2C3862;
+    --rule: #243055;
+    --focus: #8FB0FF;
+    --good: #5FDBA8;
+    --bad: #FF8F84;
+    --band-s: 65%;
+    --band-l: 64%;
+    --shadow: 0 2px 0 rgba(0, 0, 0, 0.3), 0 10px 20px -10px rgba(0, 0, 0, 0.7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1526;
+  --surface: #1A2340;
+  --ink: #EAF0FF;
+  --muted: #9FADD0;
+  --line: #2C3862;
+  --rule: #243055;
+  --focus: #8FB0FF;
+  --good: #5FDBA8;
+  --bad: #FF8F84;
+  --band-s: 65%;
+  --band-l: 64%;
+  --shadow: 0 2px 0 rgba(0, 0, 0, 0.3), 0 10px 20px -10px rgba(0, 0, 0, 0.7);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-block: 24px 96px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1000px; margin: 0 auto; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Estilo para el banner inferior con la calabaza en 8 bits y el texto del canal */
+.channel-banner-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: transparent;
+  padding: 24px 16px 12px;
+  margin-top: 40px;
+  text-decoration: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.channel-banner-bottom:hover {
+  transform: translateY(-2px);
+  opacity: 0.85;
+}
+.channel-banner-bottom .pumpkin-icon {
+  width: 50px;
+  height: 50px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+}
+.channel-banner-bottom .channel-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--ink);
+}
+
+h1, h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); }
+h2 { font-size: clamp(1.7rem, 5.5vw, 2.6rem); }
+p { margin: 0; }
+.lead { color: var(--muted); margin: 10px 0 0; max-width: 46ch; }
+.head { display: grid; gap: 4px; margin-bottom: 22px; }
+
+/* Botones */
+.bar-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 14px; }
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 0.95rem var(--font-body);
+  color: var(--ink);
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 9px 16px 9px 12px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.back:hover { transform: translateX(-2px); }
+.back svg { width: 18px; height: 18px; }
+.btn {
+  appearance: none;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+  font: 700 1rem var(--font-body);
+  min-height: 52px;
+  padding: 0 24px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+.btn:active { transform: scale(0.97); }
+.btn.alt { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.back:focus-visible, .btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.chip { font-weight: 700; color: var(--muted); letter-spacing: 0.02em; }
+
+/* Botón de música */
+.music {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.music svg { width: 26px; height: 26px; }
+.music .off { display: none; }
+.music[aria-pressed="false"] .on { display: none; }
+.music[aria-pressed="false"] .off { display: inline; }
+.music[aria-pressed="false"] { color: var(--muted); }
+.music:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+.progress { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.track { width: 120px; height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.fill { height: 100%; width: 0; background: var(--focus); border-radius: 999px; transition: width 0.3s ease; }
+
+/* Ficha: banda de color arriba y renglones azules */
+.sheet {
+  position: relative;
+  background-color: var(--surface);
+  background-image: linear-gradient(to bottom, transparent calc(12cqw - 1.5px), var(--rule) 0);
+  background-size: 100% 12cqw;
+  background-position: 0 4cqw;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 11%;
+  background: hsl(var(--h) var(--band-s) var(--band-l));
+}
+
+/* Inicio: dos opciones grandes */
+.modes { display: grid; grid-template-columns: 1fr; gap: 16px; list-style: none; margin: 0; padding: 0; }
+.modes > li { min-width: 0; }
+.mode {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  min-height: 230px;
+  padding: 44px 20px 20px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 20px;
+  background-size: 100% 30px;
+  background-position: 0 26px;
+  background-image: linear-gradient(to bottom, transparent 28.5px, var(--rule) 0);
+  transition: transform 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.mode::before { height: 26px; }
+.mode:hover { transform: translateY(-4px) rotate(-0.6deg); }
+.mode:active { transform: scale(0.99); }
+.mode:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.mode .art { display: flex; align-items: flex-end; gap: 10px; min-height: 96px; margin-bottom: 14px; }
+.mode .mtitle { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 6vw, 2.1rem); letter-spacing: -0.02em; line-height: 1.05; }
+.mode .mdesc { color: var(--muted); margin-top: 6px; max-width: 34ch; }
+.mode .go {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--bg);
+  display: grid;
+  place-items: center;
+}
+.mode .go svg { width: 20px; height: 20px; }
+.mini {
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 58px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 2px solid var(--line);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+}
+.mini.m1 { transform: rotate(-6deg); }
+.mini.m2 {
+  transform: rotate(5deg);
+  margin-left: -22px;
+  margin-bottom: 8px;
+  background: hsl(var(--h) var(--band-s) var(--band-l));
+  color: var(--on-band);
+  border-color: hsl(var(--h) var(--band-s) calc(var(--band-l) - 12%));
+  font-size: 1.7rem;
+}
+.mode .art .av { width: 92px; flex: none; }
+.mode .art .av svg { display: block; width: 100%; height: auto; }
+.pill {
+  background: var(--bg);
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  padding: 8px 14px;
+  margin-bottom: 36px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.35rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Selector de tabla */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.grid > li { min-width: 0; }
+.card, .tile {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  container-type: inline-size;
+  -webkit-tap-highlight-color: transparent;
+}
+.card:focus-visible, .tile:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 16px; }
+.tile { position: relative; }
+.tile .sheet {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 8%;
+  transition: transform 0.2s ease;
+}
+.tile:hover .sheet { transform: translateY(-4px) rotate(-0.8deg); }
+.tile:active .sheet { transform: translateY(0) scale(0.98); }
+.tile .tag {
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-size: max(0.66rem, 4.4cqw);
+}
+.tile .num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 40cqw;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+.tile .count { font-size: max(0.72rem, 5.2cqw); color: var(--muted); white-space: nowrap; }
+.tile .row { display: flex; align-items: center; justify-content: center; gap: 3cqw; }
+.tile .row .num { font-size: 30cqw; }
+.tile .row .av { width: 32cqw; display: block; }
+.tile .row .av svg { display: block; width: 100%; height: auto; }
+
+/* Tarjetas de estudio: fichas que voltean */
+.card { perspective: 900px; position: relative; }
+.inner {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.card[aria-pressed="true"] .inner { transform: rotateY(180deg); }
+.face {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.front { padding-top: 8%; }
+.q {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 17cqw;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.q .op { color: var(--muted); font-weight: 600; padding: 0 0.12em; }
+.back-face {
+  transform: rotateY(180deg);
+  background: hsl(var(--h) var(--band-s) var(--band-l));
+  color: var(--on-band);
+  border: 2px solid hsl(var(--h) var(--band-s) calc(var(--band-l) - 12%));
+  box-shadow: var(--shadow);
+  gap: 2px;
+}
+.back-face .small { font-weight: 600; font-size: max(0.78rem, 7cqw); opacity: 0.8; font-variant-numeric: tabular-nums; }
+.back-face .ans {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 36cqw;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.seen {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--focus);
+  color: var(--surface);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.seen svg { width: 13px; height: 13px; }
+.card[data-seen="1"] .seen { opacity: 1; transform: scale(1); }
+
+/* Personajes y globo de diálogo */
+.talk { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+.charbox { width: clamp(100px, 30vw, 150px); flex: none; text-align: center; }
+.owl-wrap { width: 100%; }
+.who { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-top: 2px; line-height: 1.2; }
+.owl { display: block; width: 100%; height: auto; overflow: visible; }
+.o-out { stroke: var(--ink); stroke-opacity: 0.3; stroke-width: 2.5; stroke-linejoin: round; }
+.o-eye { fill: #fff; stroke: #16203A; stroke-opacity: 0.35; stroke-width: 1.5; }
+.o-pupil { fill: #16203A; }
+.o-shine { fill: #fff; }
+.o-arc { fill: none; stroke: #16203A; stroke-width: 4.5; stroke-linecap: round; }
+.o-brow { fill: none; stroke: #16203A; stroke-width: 3.5; stroke-linecap: round; }
+.o-mouth { fill: none; stroke: #16203A; stroke-width: 3.5; stroke-linecap: round; }
+.o-mouthfill { fill: #7A1F2B; }
+.o-blush { fill: var(--blush); }
+.o-tear { fill: var(--tear); }
+.o-beak { fill: var(--beak); }
+.owl .m-happy, .owl .m-sad, .owl .m-pupils-s, .owl .mo-h, .owl .mo-s { display: none; }
+.owl[data-mood="happy"] .m-eyes, .owl[data-mood="happy"] .m-pupils-n, .owl[data-mood="happy"] .mo-n { display: none; }
+.owl[data-mood="happy"] .m-happy, .owl[data-mood="happy"] .mo-h { display: inline; }
+.owl[data-mood="sad"] .m-pupils-n, .owl[data-mood="sad"] .mo-n { display: none; }
+.owl[data-mood="sad"] .m-pupils-s, .owl[data-mood="sad"] .m-sad, .owl[data-mood="sad"] .mo-s { display: inline; }
+.charbox.pop[data-mood="happy"] .owl-wrap { animation: hop 0.6s ease; }
+.charbox.pop[data-mood="sad"] .owl-wrap { animation: wobble 0.5s ease; }
+@keyframes hop { 0%, 100% { transform: translateY(0); } 35% { transform: translateY(-14px); } 65% { transform: translateY(0); } 82% { transform: translateY(-5px); } }
+@keyframes wobble { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
+
+.bubble {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 22px;
+  padding: 20px 18px 18px;
+  box-shadow: var(--shadow);
+}
+.bubble::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 44px;
+  width: 18px;
+  height: 18px;
+  background: var(--surface);
+  border-left: 2px solid var(--line);
+  border-top: 2px solid var(--line);
+  transform: rotate(45deg);
+}
+.qlabel { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.ask { margin-top: 8px; color: var(--muted); font-weight: 500; }
+.big {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 13vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+.answer { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.answer input {
+  flex: 1 1 120px;
+  min-width: 0;
+  min-height: 56px;
+  font: 800 1.9rem var(--font-display);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--ink);
+  background: var(--bg);
+  border: 3px solid var(--line);
+  border-radius: 14px;
+  padding: 6px 12px;
+}
+.answer input:focus { outline: none; border-color: var(--focus); }
+.answer .btn { flex: 1 1 140px; }
+.fb { min-height: 1.6em; margin-top: 14px; font-weight: 700; }
+.fb.ok { color: var(--good); }
+.fb.no { color: var(--bad); }
+
+.dots { display: flex; flex-wrap: wrap; gap: 7px; list-style: none; margin: 0 0 20px; padding: 0; }
+.dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); background: transparent; }
+.dot.now { border-color: var(--focus); }
+.dot.ok { background: var(--good); border-color: var(--good); }
+.dot.no { background: var(--bad); border-color: var(--bad); }
+
+/* Preparación de la prueba */
+.choices { border: 0; margin: 22px 0 0; padding: 0; min-width: 0; }
+.choices legend { font-weight: 700; margin-bottom: 10px; padding: 0; }
+.choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.choice { position: relative; display: block; min-width: 0; }
+.choice input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.choice .box {
+  display: block;
+  height: 100%;
+  background: var(--surface);
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  transition: border-color 0.15s ease;
+}
+.choice .t { display: block; font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; }
+.choice .d { display: block; color: var(--muted); font-size: 0.88rem; margin-top: 2px; }
+.choice input:checked + .box { border-color: var(--focus); }
+.choice input:focus-visible + .box { outline: 3px solid var(--focus); outline-offset: 3px; }
+.start-row { margin-top: 20px; }
+.start-row .btn { width: 100%; max-width: 360px; }
+
+/* Resultado */
+.score { font-family: var(--font-display); font-weight: 800; line-height: 1; margin: 6px 0 10px; font-variant-numeric: tabular-nums; }
+.score .n { font-size: clamp(3.4rem, 16vw, 5.4rem); letter-spacing: -0.04em; }
+.score .of { font-size: 1.6rem; color: var(--muted); margin-left: 4px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 8px 0 0; }
+.chips li { background: var(--bg); border: 2px solid var(--line); border-radius: 999px; padding: 4px 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+#missed { margin-top: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .inner, .tile .sheet, .back, .fill, .seen, .btn, .mode { transition: none; }
+  .card[aria-pressed="true"] .inner { transform: none; }
+  .back-face { transform: none; opacity: 0; }
+  .card[aria-pressed="true"] .back-face { opacity: 1; }
+  .card[aria-pressed="true"] .front { opacity: 0; }
+  .tile:hover .sheet, .mode:hover { transform: none; }
+  .charbox.pop[data-mood] .owl-wrap { animation: none; }
+}
+
+@media (min-width: 720px) {
+  .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
+  .modes { grid-template-columns: 1fr 1fr; gap: 20px; }
+  .talk { flex-direction: row; align-items: flex-end; gap: 20px; }
+  .bubble { flex: 1 1 0; width: auto; padding: 24px 26px; }
+  .bubble::before { top: auto; bottom: 36px; left: -10px; border-top: 0; border-left: 2px solid var(--line); border-bottom: 2px solid var(--line); }
+}
+</style>
+
+<main class="wrap">
+  <!-- Inicio -->
+  <section id="home" aria-labelledby="home-title">
+    <div class="head">
+      <h1 id="home-title">Tablas de Multiplicar</h1>
+      <p class="lead">Elige cómo quieres practicar.</p>
+    </div>
+    <ul class="modes">
+      <li>
+        <button class="mode sheet" id="mode-estudio" type="button" style="--h:205">
+          <span class="art" aria-hidden="true"><span class="mini m1">3 × 4</span><span class="mini m2">12</span></span>
+          <span class="mtitle">Tarjetas de estudio</span>
+          <span class="mdesc">Toca cada tarjeta y descubre el resultado.</span>
+          <span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+      </li>
+      <li>
+        <button class="mode sheet" id="mode-prueba" type="button" style="--h:340">
+          <span class="art" aria-hidden="true"><span class="av" id="home-av"></span><span class="pill">¿6 × 7?</span></span>
+          <span class="mtitle">Prueba</span>
+          <span class="mdesc">Un personaje te pregunta los resultados.</span>
+          <span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Selector de tabla (tarjetas o prueba) -->
+  <section id="picker" aria-labelledby="picker-title" hidden>
+    <div class="bar-row">
+      <button class="back" id="picker-back" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        Inicio
+      </button>
+    </div>
+    <div class="head">
+      <h2 id="picker-title">Tarjetas de estudio</h2>
+      <p class="lead" id="picker-lead">Elige una tabla.</p>
+    </div>
+    <ul class="grid" id="picker-grid"></ul>
+  </section>
+
+  <!-- Tarjetas de estudio: una tabla -->
+  <section id="deck-view" aria-labelledby="deck-title" hidden>
+    <div class="bar-row">
+      <button class="back" id="deck-back" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        Todas las tablas
+      </button>
+      <div class="progress" aria-live="polite">
+        <span id="seen-count">0 de 10 vistas</span>
+        <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+      </div>
+    </div>
+    <div class="head">
+      <h2 id="deck-title">Tabla del 5</h2>
+      <p class="lead">Toca una tarjeta para ver su resultado. Al abrir otra, la anterior vuelve a la operación.</p>
+    </div>
+    <ul class="grid" id="deck"></ul>
+  </section>
+
+  <!-- Prueba: preparación -->
+  <section id="setup" aria-labelledby="setup-title" hidden>
+    <div class="bar-row">
+      <button class="back" id="setup-back" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        Todas las tablas
+      </button>
+    </div>
+    <div class="talk">
+      <div class="charbox" id="char-setup"><div class="owl-wrap"></div><p class="who"></p></div>
+      <div class="bubble">
+        <h2 id="setup-title">Prueba de la tabla del 5</h2>
+        <p class="lead" id="setup-hello" style="margin-top:10px">Hola. Te haré 10 preguntas y tú escribes el resultado.</p>
+      </div>
+    </div>
+    <fieldset class="choices">
+      <legend>¿En qué orden van las preguntas?</legend>
+      <div class="choice-grid">
+        <label class="choice">
+          <input type="radio" name="order" value="ord" id="order-ord" checked>
+          <span class="box"><span class="t">Ordenadas</span><span class="d">Del 1 al 10</span></span>
+        </label>
+        <label class="choice">
+          <input type="radio" name="order" value="mix" id="order-mix">
+          <span class="box"><span class="t">Salteadas</span><span class="d">En desorden</span></span>
+        </label>
+      </div>
+    </fieldset>
+    <div class="start-row"><button class="btn" id="start" type="button">Empezar prueba</button></div>
+  </section>
+
+  <!-- Prueba: preguntas -->
+  <section id="quiz" aria-label="Prueba" hidden>
+    <div class="bar-row">
+      <button class="back" id="quit" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        Salir
+      </button>
+      <span class="chip" id="quiz-title">Tabla del 5</span>
+    </div>
+    <ol class="dots" id="dots" aria-hidden="true"></ol>
+    <div class="talk">
+      <div class="charbox" id="char-quiz"><div class="owl-wrap"></div><p class="who"></p></div>
+      <div class="bubble">
+        <p class="qlabel" id="qlabel">Pregunta 1 de 10</p>
+        <p class="ask">¿Cuánto es</p>
+        <p class="big" id="qbig">5 × 1?</p>
+        <form id="form" class="answer" autocomplete="off" novalidate>
+          <label class="sr" for="answer">Tu respuesta</label>
+          <input id="answer" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off">
+          <button class="btn" id="submit" type="submit">Responder</button>
+        </form>
+        <p class="fb" id="fb" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prueba: resultado -->
+  <section id="result" aria-labelledby="result-title" hidden>
+    <div class="talk">
+      <div class="charbox" id="char-result"><div class="owl-wrap"></div><p class="who"></p></div>
+      <div class="bubble">
+        <h2 id="result-title" class="qlabel" style="font-family:var(--font-body);letter-spacing:0.1em;font-size:0.8rem;line-height:1.5">Resultado de la tabla del 5</h2>
+        <p class="score"><span class="n" id="score">0</span><span class="of">de 10</span></p>
+        <p id="result-msg" style="font-weight:600"></p>
+        <div id="missed" hidden>
+          <p class="qlabel">Para repasar</p>
+          <ul class="chips" id="missed-list"></ul>
+        </div>
+        <div class="actions">
+          <button class="btn" id="again" type="button">Repetir prueba</button>
+          <button class="btn alt" id="study" type="button">Repasar con tarjetas</button>
+          <button class="btn alt" id="levels" type="button">Otra tabla</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enlace inferior con la calabaza en 8 bits y el nombre del canal -->
+  <a href="https://www.youtube.com/@LaCalabazaDelsaber" target="_blank" rel="noopener noreferrer" class="channel-banner-bottom" aria-label="Visitar canal de YouTube @LaCalabazaDelsaber">
+    <!-- SVG optimizado de la calabaza en 8 bits con ojos blancos y sin cruz -->
+    <svg class="pumpkin-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 2h6v2h-6z" fill="#386438"/>
+      <path d="M15 3h4v3h-4z" fill="#8B5A2B"/>
+      <path d="M7 6h10v2H7z" fill="#E67E22"/>
+      <path d="M5 8h14v2H5z" fill="#E67E22"/>
+      <path d="M3 10h18v2H3z" fill="#D35400"/>
+      <path d="M3 12h18v6H3z" fill="#E67E22"/>
+      <path d="M5 18h14v2H5z" fill="#D35400"/>
+      <path d="M7 20h10v2H7z" fill="#C0392B"/>
+      <!-- Ojos blancos -->
+      <path d="M6 11h3v3H6zM15 11h3v3H15z" fill="#FFFFFF"/>
+      <!-- Boca sonriente -->
+      <path d="M8 15h8v2H8z" fill="#16203A"/>
+      <path d="M9 17h6v1H9z" fill="#16203A"/>
+    </svg>
+    <span class="channel-text">@lacalabazadelsaber</span>
+  </a>
+</main>
+
+<button class="music" id="music" type="button" aria-pressed="true" aria-label="Música y sonidos activados. Toca para silenciar.">
+  <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 010 6"/><path d="M18 6.5a8 8 0 010 11"/></svg>
+  <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z" fill="currentColor"/><path d="M16 9.5l5 5"/><path d="M21 9.5l-5 5"/></svg>
+</button>
+
+<script>
+(function () {
+  function $(id) { return document.getElementById(id); }
+
+  var views = { home: $('home'), picker: $('picker'), deck: $('deck-view'), setup: $('setup'), quiz: $('quiz'), result: $('result') };
+  function sceneFor(view) {
+    if (view === 'home') return 'menu';
+    if (view === 'deck') return 'study';
+    if (view === 'picker') return mode === 'estudio' ? 'study' : 'prueba';
+    return 'c' + state.t;
+  }
+  function show(name) {
+    for (var k in views) views[k].hidden = (k !== name);
+    window.scrollTo(0, 0);
+    Music.set(sceneFor(name));
+  }
+  function hue(n) { return ((n - 1) * 36 + 8) % 360; }
+
+  /* ---------- Música ---------- */
+  var Music = (function () {
+    var ctx = null, master = null, unlocked = false, enabled = true, sceneName = 'menu', live = null;
+    var KEY = 'tablas-musica';
+    try { if (localStorage.getItem(KEY) === 'off') enabled = false; } catch (e) {}
+
+    var BASS = { type: 'sine', peak: 0.1, decay: 2.4, harm: 2, harmGain: 0.5 };
+    var BASS_SHORT = { type: 'sine', peak: 0.09, decay: 0.7, harm: 2, harmGain: 0.5 };
+    var TRACKS = {
+      menu: {
+        bpm: 66, padPeak: 0.014, bassTwice: false,
+        chords: [
+          { bass: 36, pad: [60, 64, 67], arp: [67, 72, 76, 79] },
+          { bass: 33, pad: [57, 60, 64], arp: [64, 69, 72, 76] },
+          { bass: 41, pad: [57, 60, 65], arp: [65, 69, 72, 77] },
+          { bass: 43, pad: [59, 62, 67], arp: [67, 71, 74, 79] }
+        ],
+        pattern: [0, null, 2, 1, 3, null, 2, 1],
+        voice: { type: 'sine', peak: 0.055, decay: 2.2, harm: 2, harmGain: 0.25 },
+        sparkle: 0.14, sparkSteps: [0, 2, 4, 6], scale: [72, 74, 76, 79, 81, 84],
+        sparkVoice: { type: 'sine', peak: 0.045, decay: 2.8, harm: 3, harmGain: 0.2 }
+      },
+      study: {
+        bpm: 72, padPeak: 0.012, bassTwice: false,
+        chords: [
+          { bass: 29, pad: [57, 60, 65], arp: [65, 69, 72, 77] },
+          { bass: 38, pad: [57, 62, 65], arp: [62, 65, 69, 74] },
+          { bass: 34, pad: [58, 62, 65], arp: [65, 70, 74, 77] },
+          { bass: 36, pad: [55, 60, 64], arp: [64, 67, 72, 76] }
+        ],
+        pattern: [0, 1, 2, 3, 2, 1, 2, null],
+        voice: { type: 'sine', peak: 0.05, decay: 1.1, harm: 4, harmGain: 0.18 },
+        sparkle: 0.4, sparkSteps: [0, 4], scale: [72, 74, 76, 77, 79, 81],
+        sparkVoice: { type: 'sine', peak: 0.06, decay: 1.6, harm: 4, harmGain: 0.2 }
+      },
+      prueba: {
+        bpm: 92, padPeak: 0.011, bassTwice: true,
+        chords: [
+          { bass: 43, pad: [59, 62, 67], arp: [67, 71, 74, 79] },
+          { bass: 40, pad: [55, 59, 64], arp: [64, 67, 71, 76] },
+          { bass: 36, pad: [55, 60, 64], arp: [64, 67, 72, 76] },
+          { bass: 38, pad: [57, 62, 66], arp: [62, 66, 69, 74] }
+        ],
+        pattern: [0, 2, 1, 3, 1, 2, 1, 3],
+        voice: { type: 'triangle', peak: 0.08, decay: 0.55, harm: 4, harmGain: 0.12 },
+        sparkle: 0, sparkSteps: [], scale: [], sparkVoice: null
+      }
+    };
+    function chordOf(pc, q, low) {
+      var iv = q === 'm' ? [0, 3, 7] : [0, 4, 7];
+      var r = 55 + (((pc - 55) % 12) + 12) % 12;
+      var b = 36 + (((pc - 36) % 12) + 12) % 12;
+      var base = low ? r : r + 12;
+      return { bass: b, pad: [r, r + iv[1], r + iv[2]], arp: [base, base + iv[1], base + iv[2], base + 12] };
+    }
+    function build(o) {
+      var chords = [];
+      for (var i = 0; i < o.prog.length; i++) chords.push(chordOf(o.prog[i][0], o.prog[i][1], o.low));
+      return {
+        bpm: o.bpm, padPeak: o.padPeak || 0.013, bassTwice: !!o.bassTwice, chords: chords,
+        pattern: o.pattern, voice: o.voice, wet: o.wet,
+        sparkle: o.sparkle || 0, sparkSteps: o.sparkSteps || [], scale: o.scale || [], sparkVoice: o.sparkVoice || null
+      };
+    }
+    TRACKS.c1 = build({ bpm: 100, prog: [[2, 'm'], [10, 'M'], [5, 'M'], [0, 'M']], bassTwice: true, wet: 0.2, pattern: [0, null, 2, null, 1, 3, null, 2], voice: { type: 'triangle', peak: 0.08, decay: 0.3, harm: 4, harmGain: 0.1 } });
+    TRACKS.c2 = build({ bpm: 68, prog: [[0, 'M'], [7, 'M'], [9, 'm'], [5, 'M']], low: true, padPeak: 0.016, wet: 0.3, pattern: [0, null, null, 2, 1, null, null, 3], voice: { type: 'triangle', peak: 0.07, decay: 1.5, harm: 2, harmGain: 0.2 } });
+    TRACKS.c3 = build({ bpm: 104, prog: [[5, 'M'], [2, 'm'], [10, 'M'], [0, 'M']], bassTwice: true, wet: 0.22, pattern: [0, null, 1, null, 2, 1, null, null], voice: { type: 'sine', peak: 0.09, decay: 0.35, bend: 0.7 } });
+    TRACKS.c4 = build({ bpm: 84, prog: [[9, 'm'], [5, 'M'], [0, 'M'], [7, 'M']], bassTwice: true, wet: 0.25, pattern: [0, 1, 2, 1, 3, 2, 1, 2], voice: { type: 'triangle', peak: 0.075, decay: 0.7, harm: 3, harmGain: 0.12 } });
+    TRACKS.c5 = build({ bpm: 58, prog: [[4, 'm'], [0, 'M'], [7, 'M'], [2, 'M']], padPeak: 0.016, wet: 0.4, pattern: [0, null, null, 1, null, 2, null, null], voice: { type: 'sine', peak: 0.055, decay: 2.4, harm: 2.01, harmGain: 0.3 }, sparkle: 0.3, sparkSteps: [0, 3, 5], scale: [76, 79, 81, 83, 88], sparkVoice: { type: 'sine', peak: 0.04, decay: 3, harm: 2, harmGain: 0.2 } });
+    TRACKS.c6 = build({ bpm: 76, prog: [[10, 'M'], [7, 'm'], [3, 'M'], [5, 'M']], wet: 0.45, pattern: [0, 1, 2, 3, 2, 1, 0, 1], voice: { type: 'sine', peak: 0.05, decay: 1.6, harm: 3, harmGain: 0.15 } });
+    TRACKS.c7 = build({ bpm: 108, prog: [[2, 'M'], [11, 'm'], [7, 'M'], [9, 'M']], padPeak: 0.01, bassTwice: true, wet: 0.15, pattern: [0, 2, null, 1, 3, null, 2, 1], voice: { type: 'square', peak: 0.03, decay: 0.22 } });
+    TRACKS.c8 = build({ bpm: 96, prog: [[9, 'M'], [6, 'm'], [2, 'M'], [4, 'M']], wet: 0.3, pattern: [0, null, 1, null, 2, null, 3, null], voice: { type: 'sine', peak: 0.06, decay: 0.8, harm: 4, harmGain: 0.2 }, sparkle: 0.25, sparkSteps: [1, 3, 5, 7], scale: [81, 83, 85, 88, 90], sparkVoice: { type: 'sine', peak: 0.045, decay: 1.2, harm: 4, harmGain: 0.2 } });
+    TRACKS.c9 = build({ bpm: 108, prog: [[3, 'M'], [0, 'm'], [8, 'M'], [10, 'M']], bassTwice: true, wet: 0.2, pattern: [0, null, 1, 2, null, 1, 2, null], voice: { type: 'triangle', peak: 0.08, decay: 0.4, harm: 4, harmGain: 0.1 } });
+    TRACKS.c10 = build({ bpm: 58, prog: [[7, 'M'], [2, 'M'], [4, 'm'], [0, 'M']], low: true, padPeak: 0.016, wet: 0.35, pattern: [0, null, 1, null, 2, null, 1, null], voice: { type: 'sine', peak: 0.06, decay: 2.0, harm: 2, harmGain: 0.2 } });
+
+    for (var key in TRACKS) TRACKS[key].sd = 60 / TRACKS[key].bpm / 2;
+    function mtof(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+
+    function ensure() {
+      if (!ctx) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return false;
+        try { ctx = new AC(); } catch (e) { ctx = null; return false; }
+        master = ctx.createGain();
+        master.gain.value = 0.8;
+        master.connect(ctx.destination);
+      }
+      if (ctx.state === 'suspended') {
+        var p = ctx.resume();
+        if (p && p.catch) p.catch(function () {});
+      }
+      return true;
+    }
+
+    function makeBus(wet) {
+      var sg = ctx.createGain(); sg.gain.value = 0; sg.connect(master);
+      var padF = ctx.createBiquadFilter(); padF.type = 'lowpass'; padF.frequency.value = 1100; padF.connect(sg);
+      var pl = ctx.createBiquadFilter(); pl.type = 'lowpass'; pl.frequency.value = 4200; pl.connect(sg);
+      var send = ctx.createGain(); send.gain.value = (wet == null ? 0.32 : wet); pl.connect(send);
+      var dl = ctx.createDelay(1.0); dl.delayTime.value = 0.36;
+      var fbk = ctx.createGain(); fbk.gain.value = 0.34;
+      var dlf = ctx.createBiquadFilter(); dlf.type = 'lowpass'; dlf.frequency.value = 1800;
+      send.connect(dl); dl.connect(dlf); dlf.connect(fbk); fbk.connect(dl); dlf.connect(sg);
+      return { sg: sg, pad: padF, pluck: pl, nodes: [sg, padF, pl, send, dl, fbk, dlf] };
+    }
+
+    function pluck(bus, freq, t, o) {
+      var g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(o.peak, t + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + o.decay);
+      var o1 = ctx.createOscillator();
+      o1.type = o.type;
+      if (o.bend) {
+        o1.frequency.setValueAtTime(freq * o.bend, t);
+        o1.frequency.exponentialRampToValueAtTime(freq, t + 0.07);
+      } else {
+        o1.frequency.value = freq;
+      }
+      o1.connect(g);
+      if (o.harm) {
+        var o2 = ctx.createOscillator();
+        o2.type = 'sine';
+        o2.frequency.value = freq * o.harm;
+        var g2 = ctx.createGain();
+        g2.gain.value = o.harmGain;
+        o2.connect(g2);
+        g2.connect(g);
+        o2.start(t);
+        o2.stop(t + o.decay + 0.05);
+      }
+      g.connect(bus.pluck);
+      o1.start(t);
+      o1.stop(t + o.decay + 0.05);
+    }
+
+    function pad(bus, notes, t, dur, peak) {
+      var att = Math.min(1.4, dur * 0.45);
+      var end = t + dur + att;
+      for (var i = 0; i < notes.length; i++) {
+        for (var d = 0; d < 2; d++) {
+          var o = ctx.createOscillator();
+          o.type = d ? 'triangle' : 'sine';
+          o.frequency.value = mtof(notes[i]);
+          o.detune.value = d ? 6 : -6;
+          var g = ctx.createGain();
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.linearRampToValueAtTime(peak, t + att);
+          g.gain.setValueAtTime(peak, t + dur);
+          g.gain.linearRampToValueAtTime(0.0001, end);
+          o.connect(g);
+          g.connect(bus.pad);
+          o.start(t);
+          o.stop(end + 0.05);
+        }
+      }
+    }
+
+    function play(tr, step, t, bus) {
+      var bar = Math.floor(step / 8) % tr.chords.length;
+      var k = step % 8;
+      var ch = tr.chords[bar];
+      if (k === 0) {
+        pad(bus, ch.pad, t, 8 * tr.sd, tr.padPeak);
+        pluck(bus, mtof(ch.bass), t, BASS);
+      }
+      if (k === 4 && tr.bassTwice) pluck(bus, mtof(ch.bass), t, BASS_SHORT);
+      var ai = tr.pattern[k];
+      if (ai !== null) pluck(bus, mtof(ch.arp[ai]), t, tr.voice);
+      if (tr.sparkle && tr.sparkSteps.indexOf(k) !== -1 && Math.random() < tr.sparkle) {
+        pluck(bus, mtof(tr.scale[Math.floor(Math.random() * tr.scale.length)]), t, tr.sparkVoice);
+      }
+    }
+
+    function create(name) {
+      var tr = TRACKS[name];
+      var bus = makeBus(tr.wet);
+      var now = ctx.currentTime;
+      bus.sg.gain.setTargetAtTime(1, now, 0.7);
+      var s = { name: name, bus: bus, step: 0, next: now + 0.25, timer: null };
+      function tick() {
+        while (s.next < ctx.currentTime + 0.4) {
+          play(tr, s.step, s.next, bus);
+          s.next += tr.sd;
+          s.step++;
+        }
+      }
+      tick();
+      s.timer = setInterval(tick, 100);
+      return s;
+    }
+
+    function fade(s) {
+      clearInterval(s.timer);
+      var g = s.bus.sg.gain;
+      var now = ctx.currentTime;
+      g.cancelScheduledValues(now);
+      g.setValueAtTime(g.value, now);
+      g.setTargetAtTime(0, now, 0.35);
+      setTimeout(function () {
+        for (var i = 0; i < s.bus.nodes.length; i++) {
+          try { s.bus.nodes[i].disconnect(); } catch (e) {}
+        }
+      }, 3000);
+    }
+
+    function switchTo(name) {
+      if (live && live.name === name) return;
+      if (live) fade(live);
+      live = create(name);
+    }
+
+    var noiseBuf = null;
+    function noise() {
+      if (!noiseBuf) {
+        var len = Math.floor(ctx.sampleRate * 0.4);
+        noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
+        var d = noiseBuf.getChannelData(0);
+        for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      }
+      return noiseBuf;
+    }
+    function swish(t, f0, f1, dur, peak) {
+      var src = ctx.createBufferSource();
+      src.buffer = noise();
+      var bp = ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.Q.value = 1.1;
+      bp.frequency.setValueAtTime(f0, t);
+      bp.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      var g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(peak, t + dur * 0.35);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      src.connect(bp);
+      bp.connect(g);
+      g.connect(master);
+      src.start(t);
+      src.stop(t + dur + 0.05);
+    }
+    function sfx(kind) {
+      if (!enabled || !ensure()) return;
+      var t = ctx.currentTime + 0.01;
+      var out = { pluck: master };
+      if (kind === 'flip') {
+        swish(t, 1100, 3600, 0.16, 0.09);
+        pluck(out, mtof(79), t + 0.07, { type: 'sine', peak: 0.07, decay: 0.55, harm: 3, harmGain: 0.12 });
+        pluck(out, mtof(86), t + 0.14, { type: 'sine', peak: 0.05, decay: 0.7, harm: 3, harmGain: 0.1 });
+      } else if (kind === 'unflip') {
+        swish(t, 2600, 1000, 0.12, 0.07);
+        pluck(out, mtof(67), t + 0.05, { type: 'sine', peak: 0.05, decay: 0.3 });
+      } else if (kind === 'correct') {
+        pluck(out, mtof(76), t, { type: 'sine', peak: 0.09, decay: 0.7, harm: 2, harmGain: 0.25 });
+        pluck(out, mtof(79), t + 0.08, { type: 'sine', peak: 0.09, decay: 0.7, harm: 2, harmGain: 0.25 });
+        pluck(out, mtof(84), t + 0.16, { type: 'sine', peak: 0.1, decay: 0.9, harm: 2, harmGain: 0.25 });
+        pluck(out, mtof(91), t + 0.24, { type: 'sine', peak: 0.05, decay: 1.1, harm: 3, harmGain: 0.2 });
+      } else if (kind === 'wrong') {
+        pluck(out, mtof(45), t, { type: 'sine', peak: 0.1, decay: 0.35, harm: 2, harmGain: 0.4 });
+        pluck(out, mtof(62), t, { type: 'triangle', peak: 0.08, decay: 0.5 });
+        pluck(out, mtof(57), t + 0.17, { type: 'triangle', peak: 0.08, decay: 0.9, bend: 1.06 });
+      } else if (kind === 'tap') {
+        pluck(out, mtof(72), t, { type: 'triangle', peak: 0.05, decay: 0.18, harm: 2, harmGain: 0.15 });
+      }
+    }
+
+    return {
+      sfx: sfx,
+      set: function (name) {
+        sceneName = name;
+        if (!ctx || !unlocked || !enabled) return;
+        switchTo(name);
+      },
+      gesture: function () {
+        if (!ensure()) return;
+        unlocked = true;
+        if (!enabled) return;
+        switchTo(sceneName);
+      },
+      toggle: function () {
+        enabled = !enabled;
+        try { localStorage.setItem(KEY, enabled ? 'on' : 'off'); } catch (e) {}
+        if (!enabled) {
+          if (live) { fade(live); live = null; }
+        } else {
+          this.gesture();
+        }
+        return enabled;
+      },
+      isOn: function () { return enabled; },
+      visibility: function () {
+        if (!ctx) return;
+        if (document.hidden) {
+          if (ctx.state === 'running') ctx.suspend();
+        } else if (unlocked) {
+          ctx.resume();
+        }
+      }
+    };
+  })();
+
+  var musicBtn = $('music');
+  function paintMusic() {
+    var on = Music.isOn();
+    musicBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    musicBtn.setAttribute('aria-label', on ? 'Música y sonidos activados. Toca para silenciar.' : 'Música y sonidos silenciados. Toca para activar.');
+  }
+  paintMusic();
+  musicBtn.addEventListener('click', function () { Music.toggle(); paintMusic(); });
+  document.addEventListener('click', function () { Music.gesture(); });
+  document.addEventListener('visibilitychange', function () { Music.visibility(); });
+
+  /* ---------- Personajes ---------- */
+  function U(fill, shapes) {
+    var out = '', top = '';
+    for (var i = 0; i < shapes.length; i++) {
+      out += shapes[i].replace('/>', ' class="o-out" fill="' + fill + '"/>');
+      top += shapes[i].replace('/>', ' fill="' + fill + '"/>');
+    }
+    return out + top;
+  }
+  function E(fill, cx, cy, rx, ry, extra) {
+    return '<ellipse fill="' + fill + '" cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '"' + (extra || '') + '/>';
+  }
+  function C(fill, cx, cy, r, extra) {
+    return '<circle fill="' + fill + '" cx="' + cx + '" cy="' + cy + '" r="' + r + '"' + (extra || '') + '/>';
+  }
+  function P(fill, d, extra) {
+    return '<path fill="' + fill + '" d="' + d + '"' + (extra || '') + '/>';
+  }
+  function OUT(s) { return s.replace('/>', ' class="o-out"/>'); }
+
+  function face(dy, mouth, my) {
+    var y = 66 + dy;
+    var s = '';
+    s += '<g class="m-eyes"><circle class="o-eye" cx="44" cy="' + y + '" r="13"/><circle class="o-eye" cx="76" cy="' + y + '" r="13"/></g>';
+    s += '<g class="m-pupils-n"><circle class="o-pupil" cx="46" cy="' + (y + 1) + '" r="6"/><circle class="o-pupil" cx="74" cy="' + (y + 1) + '" r="6"/>' +
+      '<circle class="o-shine" cx="48.3" cy="' + (y - 1.5) + '" r="2"/><circle class="o-shine" cx="76.3" cy="' + (y - 1.5) + '" r="2"/></g>';
+    s += '<g class="m-pupils-s"><circle class="o-pupil" cx="45" cy="' + (y + 5) + '" r="6"/><circle class="o-pupil" cx="75" cy="' + (y + 5) + '" r="6"/>' +
+      '<circle class="o-shine" cx="47.3" cy="' + (y + 2.5) + '" r="2"/><circle class="o-shine" cx="77.3" cy="' + (y + 2.5) + '" r="2"/></g>';
+    s += '<g class="m-happy"><path class="o-arc" d="M31 ' + (y + 3) + ' Q44 ' + (y - 13) + ' 57 ' + (y + 3) + '"/>' +
+      '<path class="o-arc" d="M63 ' + (y + 3) + ' Q76 ' + (y - 13) + ' 89 ' + (y + 3) + '"/>' +
+      '<circle class="o-blush" cx="26" cy="' + (y + 15) + '" r="5"/><circle class="o-blush" cx="94" cy="' + (y + 15) + '" r="5"/></g>';
+    s += '<g class="m-sad"><path class="o-brow" d="M30 ' + (y - 12) + ' L54 ' + (y - 19) + '"/><path class="o-brow" d="M66 ' + (y - 19) + ' L90 ' + (y - 12) + '"/>' +
+      '<path class="o-tear" d="M33 ' + (y + 17) + ' q-5 8 0 11 q5 -3 0 -11z"/></g>';
+    if (mouth === 'mouth') {
+      s += '<path class="o-mouth mo-n" d="M51 ' + my + ' Q60 ' + (my + 6) + ' 69 ' + my + '"/>';
+      s += '<path class="o-mouthfill mo-h" d="M49 ' + (my - 2) + ' Q60 ' + (my + 17) + ' 71 ' + (my - 2) + ' Z"/>';
+      s += '<path class="o-mouth mo-s" d="M52 ' + (my + 6) + ' Q60 ' + (my - 2) + ' 68 ' + (my + 6) + '"/>';
+    } else if (mouth === 'beak') {
+      s += '<path class="o-beak" d="M54 80 L66 80 L60 91 Z"/>';
+    }
+    return s;
+  }
+
+  var CHARS = {
+    1: { name: 'Fito el zorro', build: function () {
+      var c = 'hsl(22 92% 58%)', w = 'hsl(30 100% 96%)', d = 'hsl(14 60% 30%)';
+      return U(c, ['<path d="M22 58 L18 10 L56 36 Z"/>', '<path d="M98 58 L102 10 L64 36 Z"/>', '<ellipse cx="60" cy="72" rx="42" ry="40"/>']) +
+        P(d, 'M27 47 L25 22 L44 36 Z') + P(d, 'M93 47 L95 22 L76 36 Z') +
+        E(w, 37, 88, 22, 14) + E(w, 83, 88, 22, 14) + E(w, 60, 94, 17, 12) +
+        E('#2B1A16', 60, 80, 5.5, 4) +
+        face(0, 'mouth', 90);
+    } },
+    2: { name: 'Leo el león', build: function () {
+      var mane = 'hsl(24 78% 46%)', c = 'hsl(42 92% 62%)', m = 'hsl(40 100% 90%)';
+      var s = C(mane, 60, 68, 46);
+      for (var i = 0; i < 12; i++) {
+        var a = i * Math.PI / 6;
+        s += C(mane, (60 + 41 * Math.cos(a)).toFixed(1), (68 + 41 * Math.sin(a)).toFixed(1), 14);
+      }
+      s += C(c, 28, 42, 10, ' class="o-out"') + C(c, 92, 42, 10, ' class="o-out"');
+      s += U(c, ['<ellipse cx="60" cy="72" rx="36" ry="35"/>']);
+      s += E(m, 60, 90, 18, 12) + P('#5A2E1B', 'M53 79 L67 79 L60 87 Z');
+      return s + face(0, 'mouth', 93);
+    } },
+    3: { name: 'Croac la rana', build: function () {
+      var c = 'hsl(95 62% 54%)', d = 'hsl(100 55% 40%)';
+      return U(c, ['<circle cx="42" cy="48" r="17"/>', '<circle cx="78" cy="48" r="17"/>', '<ellipse cx="60" cy="76" rx="44" ry="36"/>']) +
+        C(d, 28, 88, 4) + C(d, 92, 90, 4) + C(d, 40, 100, 3) + C(d, 82, 102, 3) +
+        C(d, 55, 72, 1.8) + C(d, 65, 72, 1.8) +
+        face(-18, 'mouth', 90);
+    } },
+    4: { name: 'Chispa el dragón', build: function () {
+      var c = 'hsl(350 75% 62%)', horn = 'hsl(45 95% 85%)', sp = 'hsl(45 92% 62%)', sn = 'hsl(350 85% 84%)';
+      return P(horn, 'M34 42 L26 12 L52 34 Z', ' class="o-out"') + P(horn, 'M86 42 L94 12 L68 34 Z', ' class="o-out"') +
+        P(sp, 'M50 36 L60 16 L70 36 Z', ' class="o-out"') +
+        U(c, ['<path d="M22 66 L2 58 L10 82 Z"/>', '<path d="M98 66 L118 58 L110 82 Z"/>', '<ellipse cx="60" cy="72" rx="42" ry="40"/>']) +
+        E(sn, 60, 91, 22, 14) + C('#16203A', 52, 86, 1.9) + C('#16203A', 68, 86, 1.9) +
+        face(0, 'mouth', 95);
+    } },
+    5: { name: 'Profe Búho', build: function () {
+      var c = 'hsl(262 52% 64%)', wing = 'hsl(262 46% 52%)', belly = 'hsl(262 65% 90%)', cap = '#34407A';
+      return OUT(E(wing, 20, 82, 9, 20, ' transform="rotate(10 20 82)"')) + OUT(E(wing, 100, 82, 9, 20, ' transform="rotate(-10 100 82)"')) +
+        E('hsl(38 95% 58%)', 47, 114, 10, 4) + E('hsl(38 95% 58%)', 73, 114, 10, 4) +
+        U(c, ['<ellipse cx="60" cy="74" rx="42" ry="40"/>']) +
+        E(belly, 60, 96, 26, 17) + C(belly, 44, 66, 17) + C(belly, 76, 66, 17) +
+        face(0, 'beak') +
+        P(cap, 'M60 6 L102 22 L60 38 L18 22 Z', ' class="o-out"') + P(cap, 'M38 31 L38 42 Q60 52 82 42 L82 31 L60 40 Z') +
+        '<path d="M102 22 L106 40" stroke="hsl(38 95% 58%)" stroke-width="2.5" stroke-linecap="round" fill="none"/>' + C('hsl(38 95% 58%)', 106, 42, 3.5);
+    } },
+    6: { name: 'Tinta el pulpo', build: function () {
+      var c = 'hsl(190 70% 56%)', l = 'hsl(190 80% 82%)';
+      return U(c, ['<ellipse cx="26" cy="98" rx="10" ry="16" transform="rotate(25 26 98)"/>', '<ellipse cx="46" cy="104" rx="10" ry="14"/>', '<ellipse cx="74" cy="104" rx="10" ry="14"/>', '<ellipse cx="94" cy="98" rx="10" ry="16" transform="rotate(-25 94 98)"/>', '<ellipse cx="60" cy="64" rx="42" ry="40"/>']) +
+        C(l, 60, 36, 4) + C(l, 45, 40, 3) + C(l, 75, 40, 3) +
+        face(0, 'mouth', 88);
+    } },
+    7: { name: 'Bip el robot', build: function () {
+      var c = 'hsl(215 55% 68%)', scr = 'hsl(195 90% 91%)';
+      return U(c, ['<rect x="57" y="16" width="6" height="20" rx="3"/>', '<rect x="8" y="60" width="12" height="28" rx="4"/>', '<rect x="100" y="60" width="12" height="28" rx="4"/>', '<rect x="18" y="34" width="84" height="76" rx="18"/>']) +
+        C('hsl(8 85% 60%)', 60, 14, 7, ' class="o-out"') +
+        '<rect class="o-out" fill="' + scr + '" x="28" y="48" width="64" height="52" rx="12"/>' +
+        face(0, 'mouth', 90);
+    } },
+    8: { name: 'Lila la conejita', build: function () {
+      var c = 'hsl(335 70% 80%)', inner = 'hsl(335 90% 92%)', m = 'hsl(335 100% 96%)';
+      return U(c, ['<ellipse cx="42" cy="26" rx="11" ry="25" transform="rotate(-10 42 26)"/>', '<ellipse cx="78" cy="26" rx="11" ry="25" transform="rotate(10 78 26)"/>', '<ellipse cx="60" cy="74" rx="42" ry="38"/>']) +
+        E(inner, 42, 28, 5, 17, ' transform="rotate(-10 42 28)"') + E(inner, 78, 28, 5, 17, ' transform="rotate(10 78 28)"') +
+        E(m, 60, 89, 16, 11) + E('hsl(345 80% 62%)', 60, 81, 4.5, 3.2) +
+        face(0, 'mouth', 91);
+    } },
+    9: { name: 'Pipo el pingüino', build: function () {
+      var c = 'hsl(225 38% 36%)', w = 'hsl(0 0% 98%)';
+      return OUT(E(c, 18, 86, 8, 18, ' transform="rotate(12 18 86)"')) + OUT(E(c, 102, 86, 8, 18, ' transform="rotate(-12 102 86)"')) +
+        E('hsl(38 95% 58%)', 47, 114, 10, 4) + E('hsl(38 95% 58%)', 73, 114, 10, 4) +
+        U(c, ['<ellipse cx="60" cy="74" rx="42" ry="40"/>']) +
+        E(w, 44, 66, 19, 18) + E(w, 76, 66, 19, 18) + E(w, 60, 92, 30, 20) +
+        face(0, 'beak');
+    } },
+    10: { name: 'Miel el oso', build: function () {
+      var c = 'hsl(28 48% 50%)', inner = 'hsl(28 55% 74%)', m = 'hsl(32 60% 84%)';
+      return U(c, ['<circle cx="26" cy="40" r="13"/>', '<circle cx="94" cy="40" r="13"/>', '<ellipse cx="60" cy="74" rx="42" ry="40"/>']) +
+        C(inner, 26, 40, 6) + C(inner, 94, 40, 6) +
+        E(m, 60, 89, 19, 14) + E('#3A2418', 60, 82, 6, 4.3) +
+        face(0, 'mouth', 92);
+    } }
+  };
+
+  function charSvg(n) {
+    return '<svg class="owl" viewBox="0 0 120 120" role="img" aria-label="' + CHARS[n].name + '">' + CHARS[n].build() + '</svg>';
+  }
+
+  var boxes = { setup: $('char-setup'), quiz: $('char-quiz'), result: $('char-result') };
+  function renderChars(t) {
+    for (var k in boxes) {
+      boxes[k].querySelector('.owl-wrap').innerHTML = charSvg(t);
+      boxes[k].querySelector('.who').textContent = CHARS[t].name;
+      boxes[k].dataset.mood = 'neutral';
+      boxes[k].classList.remove('pop');
+    }
+  }
+  function setMood(which, mood) {
+    var box = boxes[which];
+    box.dataset.mood = mood;
+    box.querySelector('svg').dataset.mood = mood;
+    box.classList.remove('pop');
+    void box.offsetWidth;
+    box.classList.add('pop');
+  }
+
+  $('home-av').innerHTML = charSvg(5);
+
+  var mode = 'estudio';
+  var pickerTiles = {};
+  var grid = $('picker-grid');
+
+  function makeStudyTile(n) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tile';
+    b.setAttribute('aria-label', 'Tarjetas de la tabla del ' + n);
+    b.style.setProperty('--h', hue(n));
+    b.innerHTML =
+      '<span class="sheet"><span class="tag">Tabla del</span><span class="num">' + n + '</span><span class="count">10 tarjetas</span></span>';
+    b.addEventListener('click', function () { Music.sfx('tap'); openDeck(n); });
+    return b;
+  }
+  function makeTestTile(n) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tile';
+    b.setAttribute('aria-label', 'Prueba de la tabla del ' + n + ' con ' + CHARS[n].name);
+    b.style.setProperty('--h', hue(n));
+    b.innerHTML =
+      '<span class="sheet"><span class="tag">Tabla del</span>' +
+      '<span class="row"><span class="num">' + n + '</span><span class="av">' + charSvg(n) + '</span></span>' +
+      '<span class="count">' + CHARS[n].name + '</span></span>';
+    b.addEventListener('click', function () { Music.sfx('tap'); openSetup(n); });
+    return b;
+  }
+
+  function openPicker(m) {
+    mode = m;
+    grid.innerHTML = '';
+    pickerTiles = {};
+    $('picker-title').textContent = m === 'estudio' ? 'Tarjetas de estudio' : 'Prueba';
+    $('picker-lead').textContent = m === 'estudio'
+      ? 'Elige una tabla. Dentro, toca cada tarjeta para ver el resultado.'
+      : 'Elige una tabla. Cada una tiene su propio personaje que te hará las preguntas.';
+    for (var n = 1; n <= 10; n++) {
+      var li = document.createElement('li');
+      var b = m === 'estudio' ? makeStudyTile(n) : makeTestTile(n);
+      pickerTiles[n] = b;
+      li.appendChild(b);
+      grid.appendChild(li);
+    }
+    show('picker');
+  }
+  function backToPicker(m, n) {
+    openPicker(m);
+    if (pickerTiles[n]) pickerTiles[n].focus({ preventScroll: true });
+  }
+
+  $('mode-estudio').addEventListener('click', function () { Music.sfx('tap'); openPicker('estudio'); $('picker-back').focus({ preventScroll: true }); });
+  $('mode-prueba').addEventListener('click', function () { Music.sfx('tap'); openPicker('prueba'); $('picker-back').focus({ preventScroll: true }); });
+  $('picker-back').addEventListener('click', function () {
+    show('home');
+    $(mode === 'estudio' ? 'mode-estudio' : 'mode-prueba').focus({ preventScroll: true });
+  });
+
+  /* ---------- Tarjetas de estudio ---------- */
+  var deck = $('deck');
+  var count = $('seen-count');
+  var fill = $('fill');
+  var openCard = null;
+  var seen = {};
+  var seenTotal = 0;
+  var studyTable = 1;
+  var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+  function updateProgress() {
+    count.textContent = seenTotal + ' de 10 vistas';
+    fill.style.width = (seenTotal * 10) + '%';
+  }
+  function setFlip(card, on) {
+    var t = card.dataset.t, i = card.dataset.i;
+    card.setAttribute('aria-pressed', on ? 'true' : 'false');
+    card.setAttribute('aria-label', on
+      ? t + ' por ' + i + ' es ' + (t * i) + '. Toca para volver.'
+      : t + ' por ' + i + '. Toca para ver el resultado.');
+  }
+  function flip(card) {
+    var willOpen = card.getAttribute('aria-pressed') !== 'true';
+    Music.sfx(willOpen ? 'flip' : 'unflip');
+    if (openCard && openCard !== card) setFlip(openCard, false);
+    setFlip(card, willOpen);
+    openCard = willOpen ? card : null;
+    if (willOpen && !seen[card.dataset.i]) {
+      seen[card.dataset.i] = true;
+      seenTotal++;
+      card.dataset.seen = '1';
+      updateProgress();
+    }
+  }
+  function openDeck(t) {
+    studyTable = t;
+    openCard = null;
+    seen = {};
+    seenTotal = 0;
+    deck.innerHTML = '';
+    for (var i = 1; i <= 10; i++) {
+      var li = document.createElement('li');
+      var c = document.createElement('button');
+      c.type = 'button';
+      c.className = 'card';
+      c.dataset.t = t;
+      c.dataset.i = i;
+      c.style.setProperty('--h', hue(t));
+      c.innerHTML =
+        '<span class="inner">' +
+        '<span class="face front sheet">' +
+        '<span class="q">' + t + '<span class="op">×</span>' + i + '</span>' +
+        '<span class="seen">' + CHECK + '</span>' +
+        '</span>' +
+        '<span class="face back-face">' +
+        '<span class="small">' + t + ' × ' + i + ' =</span>' +
+        '<span class="ans">' + (t * i) + '</span>' +
+        '</span>' +
+        '</span>';
+      setFlip(c, false);
+      (function (card) { card.addEventListener('click', function () { flip(card); }); })(c);
+      li.appendChild(c);
+      deck.appendChild(li);
+    }
+    $('deck-title').textContent = 'Tabla del ' + t;
+    updateProgress();
+    show('deck');
+    $('deck-back').focus({ preventScroll: true });
+  }
+  $('deck-back').addEventListener('click', function () { backToPicker('estudio', studyTable); });
+
+  /* ---------- Prueba ---------- */
+  var state = { t: 1, order: 'ord', qs: [], idx: 0, score: 0, missed: [], phase: 'ask' };
+  var input = $('answer');
+  var fb = $('fb');
+  var submitBtn = $('submit');
+  var dotsEl = $('dots');
+  var PRAISE = ['¡Correcto!', '¡Eso es!', '¡Muy bien!', '¡Exacto!', '¡Así se hace!'];
+
+  function openSetup(t) {
+    state.t = t;
+    renderChars(t);
+    $('setup-title').textContent = 'Prueba de la tabla del ' + t;
+    $('setup-hello').textContent = 'Hola, soy ' + CHARS[t].name + '. Te haré 10 preguntas y tú escribes el resultado.';
+    $('order-' + state.order).checked = true;
+    show('setup');
+    $('start').focus({ preventScroll: true });
+  }
+  $('setup-back').addEventListener('click', function () { backToPicker('prueba', state.t); });
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function startQuiz() {
+    var qs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    if (state.order === 'mix') shuffle(qs);
+    state.qs = qs;
+    state.idx = 0;
+    state.score = 0;
+    state.missed = [];
+    dotsEl.innerHTML = '';
+    for (var i = 0; i < 10; i++) {
+      var d = document.createElement('li');
+      d.className = 'dot';
+      dotsEl.appendChild(d);
+    }
+    $('quiz-title').textContent = 'Tabla del ' + state.t;
+    show('quiz');
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    var q = state.qs[state.idx];
+    state.phase = 'ask';
+    $('qlabel').textContent = 'Pregunta ' + (state.idx + 1) + ' de 10';
+    $('qbig').textContent = state.t + ' × ' + q + '?';
+    input.value = '';
+    input.readOnly = false;
+    fb.textContent = '';
+    fb.className = 'fb';
+    submitBtn.textContent = 'Responder';
+    var dots = dotsEl.children;
+    for (var i = 0; i < dots.length; i++) {
+      if (i === state.idx) dots[i].classList.add('now'); else dots[i].classList.remove('now');
+    }
+    setMood('quiz', 'neutral');
+    input.focus({ preventScroll: true });
+  }
+
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (state.phase === 'ask') {
+      var val = input.value.trim();
+      if (val === '') {
+        fb.className = 'fb';
+        fb.textContent = 'Escribe un número para responder.';
+        input.focus({ preventScroll: true });
+        return;
+      }
+      var q = state.qs[state.idx];
+      var correct = state.t * q;
+      var dot = dotsEl.children[state.idx];
+      dot.classList.remove('now');
+      if (parseInt(val, 10) === correct) {
+        state.score++;
+        dot.classList.add('ok');
+        fb.className = 'fb ok';
+        fb.textContent = '✓ ' + PRAISE[Math.floor(Math.random() * PRAISE.length)];
+        setMood('quiz', 'happy');
+        Music.sfx('correct');
+      } else {
+        state.missed.push({ q: q, correct: correct });
+        dot.classList.add('no');
+        fb.className = 'fb no';
+        fb.textContent = 'Casi. ' + state.t + ' × ' + q + ' = ' + correct;
+        setMood('quiz', 'sad');
+        Music.sfx('wrong');
+      }
+      input.readOnly = true;
+      state.phase = 'feedback';
+      submitBtn.textContent = state.idx === 9 ? 'Ver resultado' : 'Siguiente';
+    } else {
+      state.idx++;
+      if (state.idx >= 10) showResult(); else renderQuestion();
+    }
+  });
+
+  $('quit').addEventListener('click', function () { backToPicker('prueba', state.t); });
+
+  function showResult() {
+    var s = state.score, t = state.t;
+    $('result-title').textContent = 'Resultado de la tabla del ' + t;
+    $('score').textContent = s;
+    var msg;
+    if (s === 10) msg = '¡Perfecto! Te sabes la tabla del ' + t + '.';
+    else if (s >= 8) msg = '¡Muy bien! Ya casi la dominas.';
+    else if (s >= 5) msg = 'Vas bien. Con un repaso te sale completa.';
+    else msg = 'Esta tabla pide más práctica. Repásala con las tarjetas y vuelve a intentarlo.';
+    $('result-msg').textContent = msg;
+    var list = $('missed-list');
+    list.innerHTML = '';
+    for (var i = 0; i < state.missed.length; i++) {
+      var li = document.createElement('li');
+      li.textContent = t + ' × ' + state.missed[i].q + ' = ' + state.missed[i].correct;
+      list.appendChild(li);
+    }
+    $('missed').hidden = state.missed.length === 0;
+    show('result');
+    setMood('result', s >= 7 ? 'happy' : (s >= 5 ? 'neutral' : 'sad'));
+    $('again').focus({ preventScroll: true });
+  }
+
+  $('start').addEventListener('click', function () {
+    state.order = $('order-mix').checked ? 'mix' : 'ord';
+    startQuiz();
+  });
+  $('again').addEventListener('click', startQuiz);
+  $('study').addEventListener('click', function () { openDeck(state.t); });
+  $('levels').addEventListener('click', function () { backToPicker('prueba', state.t); });
+})();
+</script>
+
+</body></html>
